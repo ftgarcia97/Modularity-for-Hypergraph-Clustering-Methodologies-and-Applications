@@ -24,10 +24,15 @@ and are part of the experimental section of the document [1].
 
 ## Citation information
 
-If 
+Please cite paper [1] in case the implementation is used.
 
 ## References
 
 [1] Benati, Stefano and Puerto, Justo and Temprano, Francisco, 
     Modularity for Hypergraph Clustering: Methodologies and Applications. 
     Available at SSRN: https://ssrn.com/abstract=5188404 or http://dx.doi.org/10.2139/ssrn.5188404
+[2] Bogumił Kamiński, Paweł Prałat, François Théberge, 
+    Hypergraph Artificial Benchmark for Community Detection (h–ABCD), Journal of Complex Networks, Volume 11, Issue 4, August 2023, cnad028, https://doi.org/10.1093/comnet/cnad028
+[3] Newman, Mark,
+    Networks: An Introduction – Oxford Scholarship. Oxford University Press. 2021. doi:10.1093/acprof:oso/9780199206650.001.0001. ISBN 9780191594175.
+    
