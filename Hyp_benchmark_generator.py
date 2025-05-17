@@ -7,6 +7,10 @@ import math
 # s_min: Minimum community size
 # s_max: Maximum community size
 # nc_max: Maximum number of communities
+# n_hyp: number of hyperedges
+# L: maximum size of hyperedges
+# 1-mu: fraction of hyperedges that are internal
+# 1-noise: fraction of nodes from an internal hyperedge that belong to the same community
 
 def Benati_Hyp_benchmark_generator(N,s_min,s_max,mu,noise,nc_max,L,n_hyp):
     nodes=range(1,N+1)
