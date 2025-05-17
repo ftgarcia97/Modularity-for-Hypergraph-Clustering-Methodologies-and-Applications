@@ -19,11 +19,11 @@ def LSHM_heuristic(nodes,degree,hyp_adj,exp_value,nc,hyp,rep,gamma_e):
     S={}
     obj_val={}
     degree_com={}
-    peso_com={}
+    weight_com={}
     for k in range(1,nc+1):
         S[k]=initial_partition[k-1]
         degree_com[k]=sum([degree[i] for i in S[k]])
-        obj_val[k]=-exp_value[grados_com[k]]
+        obj_val[k]=-exp_value[degree_com[k]]
         for e in hyp:
             weight_com[k,e]=len([i for i in e if(i in S[k])])-gamma_e[e]+1
             if(weight_com[k,e]>=1):
@@ -122,7 +122,7 @@ def F_hypmod1(nodes,W):
 
 
 #Hypergraph modularity
-def F_hypmod3(hyp,nodes,gamma_e,rep,degree,degree_total,exp_value):
+def F_hypmod3(hyp,nodes,gamma_e,rep,degree,degree_sum,exp_value):
     m_hypmod3 = gp.Model("model F_hypmod3")
     n=len(nodes)
     
@@ -144,13 +144,13 @@ def F_hypmod3(hyp,nodes,gamma_e,rep,degree,degree_total,exp_value):
             ub_int[e,s]=len([i for i in e if(i<=s)])
             h[e,s]=m_hypmod3.addVar(vtype=GRB.BINARY,lb=0,ub=1)
             h_pos[e,s]=m_hypmod3.addVar(vtype=GRB.CONTINUOUS,lb=0)
-        for l in range(degree[s],degree_total-sum([degree[t] for t in nodes if(t>s)])+1):
+        for l in range(degree[s],degree_sum-sum([degree[t] for t in nodes if(t>s)])+1):
             d[l,s]=m_hypmod3.addVar(vtype=GRB.BINARY,lb=0,ub=1,name="d_"+str(l)+"_"+str(s))
     
     
     
     # Objective function
-    m_hypmod3.setObjective(sum([sum([(h[e,s]+h_pos[e,s])*rep[e] for e in hyp])-sum([d[l,s]*exp_value[l] for l in range(degree[s],degree_total-sum([degree[i] for i in nodes if(i>s)])+1)]) for s in nodes]), GRB.MAXIMIZE)
+    m_hypmod3.setObjective(sum([sum([(h[e,s]+h_pos[e,s])*rep[e] for e in hyp])-sum([d[l,s]*exp_value[l] for l in range(degree[s],degree_sum-sum([degree[i] for i in nodes if(i>s)])+1)]) for s in nodes]), GRB.MAXIMIZE)
     
     # Constraints
     for i in nodes:
@@ -159,16 +159,16 @@ def F_hypmod3(hyp,nodes,gamma_e,rep,degree,degree_total,exp_value):
             if(i<s):
                 m_hypmod3.addConstr(z[i,s]<=z[s,s])
     for s in nodes:
-        m_hypmod3.addConstr(sum([d[l,s] for l in range(degree[s],degree_total-sum([degree[t] for t in nodes if(t>s)])+1)])==z[s,s])
-        m_hypmod3.addConstr(sum([d[l,s]*l for l in range(degree[s],degree_total-sum([degree[t] for t in nodes if(t>s)])+1)])==sum([degree[i]*z[i,s] for i in nodes if(i<=s)]))
+        m_hypmod3.addConstr(sum([d[l,s] for l in range(degree[s],degree_sum-sum([degree[t] for t in nodes if(t>s)])+1)])==z[s,s])
+        m_hypmod3.addConstr(sum([d[l,s]*l for l in range(degree[s],degree_sum-sum([degree[t] for t in nodes if(t>s)])+1)])==sum([degree[i]*z[i,s] for i in nodes if(i<=s)]))
         
         for e in hyp:
-            if(ub_int[e,s]>=gamma[e]):
-                m_hypmod3.addConstr(gamma[e]*h[e,s]+h_pos[e,s]<=sum([z[i,s] for i in e if(i<=s)]))
-                m_hypmod3.addConstr((ub_int[e,s]-gamma[e])*h[e,s]>=h_pos[e,s])
+            if(ub_int[e,s]>=gamma_e[e]):
+                m_hypmod3.addConstr(gamma_e[e]*h[e,s]+h_pos[e,s]<=sum([z[i,s] for i in e if(i<=s)]))
+                m_hypmod3.addConstr((ub_int[e,s]-gamma_e[e])*h[e,s]>=h_pos[e,s])
     
     ## Preprocessing
-    m_hypmod3.addConstr(sum([sum([h[e,s]+h_pos[e,s] for e in hyp if(ub_int[e,s]<gamma[e])]) for s in nodes])==0)
+    m_hypmod3.addConstr(sum([sum([h[e,s]+h_pos[e,s] for e in hyp if(ub_int[e,s]<gamma_e[e])]) for s in nodes])==0)
     
     
     for s in nodes:

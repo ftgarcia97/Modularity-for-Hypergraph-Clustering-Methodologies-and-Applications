@@ -8,7 +8,7 @@ Created on Sat May 17 01:34:17 2025
 import math
 import scipy
 import numpy as np
-from Hyp_Cluster_Methods import F_hypmod1,F_hypmod3,LSE_heuristic
+from Hyp_Cluster_Methods import F_hypmod1,F_hypmod3,LSHM_heuristic
 from Hyp_benchmark_generator import Benati_Hyp_benchmark_generator
 
 ## Random hypergraph generation
@@ -69,13 +69,13 @@ for l in range(degree_min,degree_sum+1):
         exp_val[l]=exp_val[l]+sum([(t-gamma_e[frozenset(e)]+1)*math.comb(l, t)*math.comb(degree_sum-l,len(e)-t)/math.comb(degree_sum,len(e)) for t in range(max(gamma_e[frozenset(e)],len(e)+l-degree_sum),min(len(e),l)+1)])
 
 print(F_hypmod1(nodes,W)) # Projected modularity
-print(F_hypmod3(hyp_set,nodes,gamma_e,rep,exp_val)) # Hypergraph modularity
+print(F_hypmod3(hyp_set,nodes,gamma_e,rep,degree,degree_sum,exp_val)) # Hypergraph modularity
 
 # LSHM heuristic
 obj_heur=-math.inf
 multi_start=5 # number of multi-starts
 for start in range(multi_start):
-    obj,part=LSE_heuristic(nodes,degree,hyp_adj,exp_val,nc,hyp_set,rep,gamma_e)
+    obj,part=LSHM_heuristic(nodes,degree,hyp_adj,exp_val,nc,hyp_set,rep,gamma_e)
     if(obj>obj_heur):
         obj_heur=obj
         partition_heur=part
